@@ -1,6 +1,7 @@
-import * as React from 'react';
-import './App.css';
+import * as React from "react";
+import "./App.css";
 
+import CustomTimeline from "./components/CustomTimeline";
 import logo from "./logo.svg";
 
 
