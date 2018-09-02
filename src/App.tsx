@@ -1,7 +1,9 @@
 import * as React from "react";
 import "./App.css";
+import "react-calendar-timeline/lib/Timeline.css";
 
 import logo from "./logo.svg";
+import CustomTimeline from "./components/CustomTimeline";
 
 class App extends React.Component {
   public render() {
@@ -14,6 +16,9 @@ class App extends React.Component {
         <p className="App-intro">
           To get started, edit <code>src/App.tsx</code> and save to reload.
         </p>
+        <div>
+          <CustomTimeline />
+        </div>
       </div>
     );
   }
