@@ -16,11 +16,11 @@ const rootReducer = (state: IGlobalState, action: any) => {
         case REMOVE_LAST_GROUP:
             return removeLastGroup(state, action);
         case SET_GROUPS:
-            const newGroups3: TimelineGroup[] = action.payload;
-            return { ...state, groups: newGroups3 };
+            const newGroups: TimelineGroup[] = action.payload;
+            return { ...state, groups: newGroups };
         case SET_ITEMS:
-            const newItems2: TimelineItem[] = action.payload;
-            return { ...state, items: newItems2 };
+            const newItems: TimelineItem[] = action.payload;
+            return { ...state, items: newItems };
         case MOVE_ITEM:
             return moveItem(state, action);
         case RESIZE_ITEM:
@@ -63,12 +63,11 @@ const moveItem = (state: IGlobalState, action: any): IGlobalState => {
 };
 
 const resizeItem = (state: IGlobalState, action: any): IGlobalState => {
-    const { edge, time } = action.payload;
-    const itemId2 = action.payload.itemId;
+    const { edge, time, itemId } = action.payload;
     return {
         ...state, items: state.items.map(
             (item: TimelineItem) =>
-                item.id === itemId2
+                item.id === itemId
                     ? {
                         ...item,
                         start_time: edge === "left" ? time : item.start_time,
