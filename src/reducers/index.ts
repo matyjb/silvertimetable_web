@@ -12,11 +12,13 @@ import { TimelineGroup, TimelineItem } from "react-calendar-timeline";
 const rootReducer = (state: IGlobalState, action: any) => {
     switch (action.type) {
         case ADD_GROUP:
-            const newGroups: TimelineGroup[] = state.groups;
+            const newGroups: TimelineGroup[] = [];
+            Object.assign(newGroups, state.groups);
             newGroups.push({ id: state.groups.length + 1, title: action.payload });
             return { ...state, groups: newGroups };
         case REMOVE_LAST_GROUP:
-            const newGroups2: TimelineGroup[] = state.groups;
+            const newGroups2: TimelineGroup[] = [];
+            Object.assign(newGroups2, state.groups);
             newGroups2.pop();
             return { ...state, groups: newGroups2 };
         case SET_GROUPS:

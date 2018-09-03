@@ -44,6 +44,10 @@ class CustomTimeline extends React.Component<IProps, IState> {
         };
     }
 
+    componentWillReceiveProps() {
+        console.log("NEW PROPS");
+    }
+
     render() {
         const { defaultTimeStart, defaultTimeEnd } = this.state;
         return (
