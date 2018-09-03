@@ -37,15 +37,9 @@ class CustomTimeline extends React.Component<IProps, IState> {
             .toDate();
 
         this.state = {
-            //   groups,
-            //   items,
             defaultTimeStart,
             defaultTimeEnd
         };
-    }
-
-    componentWillReceiveProps() {
-        console.log("NEW PROPS");
     }
 
     render() {
