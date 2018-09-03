@@ -3,92 +3,89 @@ import * as moment from "moment";
 
 import Timeline, { TimelineGroup, TimelineItem } from "react-calendar-timeline";
 
-import generateFakeData from "./generate-fake-data";
+// import generateFakeData from "./generate-fake-data";
+import { IGlobalState } from "../store/IGlobalState";
+import { connect } from "react-redux";
+import { addGroup, removeLastGroup, setGroups, setItems, moveItem, resizeItem } from "../actions";
 
-interface IState {
+interface IProps {
     groups: TimelineGroup[];
     items: TimelineItem[];
+
+    addGroup: any;
+    removeLastGroup: any;
+    setGroups: any;
+    setItems: any;
+    handleItemMove: any;
+    handleItemResize: any;
+}
+
+interface IState {
     defaultTimeStart: Date;
     defaultTimeEnd: Date;
 }
 
-export default class CustomTimeline extends React.Component<{}, IState> {
-  constructor(props: any) {
-    super(props);
+class CustomTimeline extends React.Component<IProps, IState> {
+    constructor(props: IProps) {
+        super(props);
+        const defaultTimeStart = moment()
+            .startOf("day")
+            .toDate();
+        const defaultTimeEnd = moment()
+            .startOf("day")
+            .add(1, "day")
+            .toDate();
 
-    const { groups, items } = generateFakeData();
-    const defaultTimeStart = moment()
-      .startOf("day")
-      .toDate();
-    const defaultTimeEnd = moment()
-      .startOf("day")
-      .add(1, "day")
-      .toDate();
+        this.state = {
+            //   groups,
+            //   items,
+            defaultTimeStart,
+            defaultTimeEnd
+        };
+    }
 
-    this.state = {
-      groups,
-      items,
-      defaultTimeStart,
-      defaultTimeEnd
-    };
-  }
-
-  handleItemMove = (itemId: number, dragTime: number, newGroupOrder: number) => {
-    const { items, groups } = this.state;
-
-    const group = groups[newGroupOrder];
-
-    this.setState({
-      items: items.map(
-        item =>
-          item.id === itemId
-            ? {...item,
-                start_time: dragTime,
-                end_time: dragTime + (item.end_time - item.start_time),
-                group: group.id}
-            : item
-      )
-    });
-
-    console.log("Moved", itemId, dragTime, newGroupOrder);
-  };
-
-  handleItemResize = (itemId: number, time: number, edge: "left" | "right") => {
-    const { items } = this.state;
-
-    this.setState({
-      items: items.map(
-        item =>
-          item.id === itemId
-            ? {...item,
-                start_time: edge === "left" ? time : item.start_time,
-                end_time: edge === "left" ? item.end_time : time}
-            : item
-      )
-    });
-
-    console.log("Resized", itemId, time, edge);
-  };
-
-  render() {
-    const { groups, items, defaultTimeStart, defaultTimeEnd } = this.state;
-    return (
-      <Timeline
-        groups={groups}
-        items={items}
-        // keys={keys}
-        sidebarContent={<div>Above The Left</div>}
-        itemTouchSendsClick={false}
-        stackItems
-        itemHeightRatio={0.75}
-        showCursorLine
-        canMove={true}
-        canResize={"both"}
-        defaultTimeStart={defaultTimeStart}
-        defaultTimeEnd={defaultTimeEnd}
-        onItemMove={this.handleItemMove}
-        onItemResize={this.handleItemResize}
-      />
-    );
-  }
+    render() {
+        const { defaultTimeStart, defaultTimeEnd } = this.state;
+        return (
+            <React.Fragment>
+                <Timeline
+                    groups={this.props.groups}
+                    items={this.props.items}
+                    // keys={keys}
+                    sidebarContent={<div>Above The Left</div>}
+                    itemTouchSendsClick={false}
+                    stackItems
+                    itemHeightRatio={0.75}
+                    showCursorLine
+                    canMove={true}
+                    canResize={"both"}
+                    defaultTimeStart={defaultTimeStart}
+                    defaultTimeEnd={defaultTimeEnd}
+                    onItemMove={this.props.handleItemMove}
+                    onItemResize={this.props.handleItemResize}
+                />
+                <button onClick={() => this.props.addGroup("no grupka")}>dodaj</button>
+                <button onClick={() => this.props.removeLastGroup()}>usun</button>
+            </React.Fragment>
+        );
+    }
 }
+const mapStateToProps = (state: IGlobalState) => {
+    return {
+        groups: state.groups,
+        items: state.items,
+    };
+};
+
+const mapDispatchToProps = (dispatch: any) => {
+    return {
+        addGroup: (name: string) => dispatch(addGroup(name)),
+        removeLastGroup: () => dispatch(removeLastGroup()),
+        setGroups: (newGroups: TimelineGroup[]) => dispatch(setGroups(newGroups)),
+        setItems: (newItems: TimelineItem[]) => dispatch(setItems(newItems)),
+        handleItemMove: (itemId: number, dragTime: number, newGroupOrder: number) => dispatch(moveItem(itemId, dragTime, newGroupOrder)),
+        handleItemResize: (itemId: number, time: number, edge: "left" | "right") => dispatch(resizeItem(itemId, time, edge)),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CustomTimeline);
