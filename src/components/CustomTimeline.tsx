@@ -6,18 +6,24 @@ import Timeline, { TimelineGroup, TimelineItem } from "react-calendar-timeline";
 // import generateFakeData from "./generate-fake-data";
 import { IGlobalState } from "../store/IGlobalState";
 import { connect } from "react-redux";
-import { addGroup, removeLastGroup, setGroups, setItems, moveItem, resizeItem } from "../actions";
+import * as actions from "../actions";
 
 interface IProps {
     groups: TimelineGroup[];
     items: TimelineItem[];
+    selected_items: number[];
 
     addGroup: any;
     removeLastGroup: any;
+    removeGroup: any;
+    clearGroups: any;
     setGroups: any;
     setItems: any;
     handleItemMove: any;
     handleItemResize: any;
+    selectItem: any;
+    deselectItem: any;
+    clearSelected: any;
 }
 
 interface IState {
@@ -49,6 +55,7 @@ class CustomTimeline extends React.Component<IProps, IState> {
                 <Timeline
                     groups={this.props.groups}
                     items={this.props.items}
+                    selected={this.props.selected_items}
                     // keys={keys}
                     sidebarContent={<div>Above The Left</div>}
                     itemTouchSendsClick={false}
@@ -61,9 +68,13 @@ class CustomTimeline extends React.Component<IProps, IState> {
                     defaultTimeEnd={defaultTimeEnd}
                     onItemMove={this.props.handleItemMove}
                     onItemResize={this.props.handleItemResize}
+                    onItemSelect={this.props.selectItem}
+                    onCanvasClick={this.props.clearSelected}
                 />
                 <button onClick={() => this.props.addGroup("no grupka")}>dodaj</button>
                 <button onClick={() => this.props.removeLastGroup()}>usun</button>
+                <button onClick={() => this.props.removeGroup(1)}>usun o id 1</button>
+                <button onClick={() => this.props.clearGroups()}>usun wszystkie</button>
             </React.Fragment>
         );
     }
@@ -72,17 +83,23 @@ const mapStateToProps = (state: IGlobalState) => {
     return {
         groups: state.groups,
         items: state.items,
+        selected_items: state.selected_items,
     };
 };
 
 const mapDispatchToProps = (dispatch: any) => {
     return {
-        addGroup: (name: string) => dispatch(addGroup(name)),
-        removeLastGroup: () => dispatch(removeLastGroup()),
-        setGroups: (newGroups: TimelineGroup[]) => dispatch(setGroups(newGroups)),
-        setItems: (newItems: TimelineItem[]) => dispatch(setItems(newItems)),
-        handleItemMove: (itemId: number, dragTime: number, newGroupOrder: number) => dispatch(moveItem(itemId, dragTime, newGroupOrder)),
-        handleItemResize: (itemId: number, time: number, edge: "left" | "right") => dispatch(resizeItem(itemId, time, edge)),
+        addGroup: (name: string) => dispatch(actions.addGroup(name)),
+        removeLastGroup: () => dispatch(actions.removeLastGroup()),
+        setGroups: (newGroups: TimelineGroup[]) => dispatch(actions.setGroups(newGroups)),
+        setItems: (newItems: TimelineItem[]) => dispatch(actions.setItems(newItems)),
+        handleItemMove: (itemId: number, dragTime: number, newGroupOrder: number) => dispatch(actions.moveItem(itemId, dragTime, newGroupOrder)),
+        handleItemResize: (itemId: number, time: number, edge: "left" | "right") => dispatch(actions.resizeItem(itemId, time, edge)),
+        removeGroup: (groupId: number) => dispatch(actions.removeGroup(groupId)),
+        clearGroups: () => dispatch(actions.clearGroups()),
+        selectItem: (itemId: number) => dispatch(actions.selectItem(itemId)),
+        deselectItem: (itemId: number) => dispatch(actions.deselectItem(itemId)),
+        clearSelected: () => dispatch(actions.clearSelected()),
     };
 };
 

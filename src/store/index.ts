@@ -4,11 +4,13 @@ import { IGlobalState } from "./IGlobalState";
 import generateFakeData from "../components/generate-fake-data";
 
 declare let window: any;
+const {groups, items} = generateFakeData();
 
 export const initialState: IGlobalState = {
-    groups: [],
-    items: [],
-} = generateFakeData();
+    groups,
+    items,
+    selected_items: [],
+};
 
 const store = createStore(
     rootReducer,
