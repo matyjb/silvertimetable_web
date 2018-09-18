@@ -7,6 +7,19 @@ import Timeline, { TimelineGroup, TimelineItem } from "react-calendar-timeline";
 import { IGlobalState } from "../store/IGlobalState";
 import { connect } from "react-redux";
 import * as actions from "../actions";
+import generateFakeData from "./generate-fake-data";
+
+const keys = {
+    groupIdKey: "id",
+    groupTitleKey: "title",
+    groupRightTitleKey: "rightTitle",
+    itemIdKey: "id",
+    itemTitleKey: "title",
+    itemDivTitleKey: "title",
+    itemGroupKey: "group",
+    itemTimeStartKey: "start_time",
+    itemTimeEndKey: "end_time"
+  };
 
 interface IProps {
     groups: TimelineGroup[];
@@ -56,7 +69,7 @@ class CustomTimeline extends React.Component<IProps, IState> {
                     groups={this.props.groups}
                     items={this.props.items}
                     selected={this.props.selected_items}
-                    // keys={keys}
+                    keys={keys}
                     sidebarContent={<div>Above The Left</div>}
                     itemTouchSendsClick={false}
                     stackItems
@@ -71,10 +84,15 @@ class CustomTimeline extends React.Component<IProps, IState> {
                     onItemSelect={this.props.selectItem}
                     onCanvasClick={this.props.clearSelected}
                 />
-                <button onClick={() => this.props.addGroup("no grupka")}>dodaj</button>
-                <button onClick={() => this.props.removeLastGroup()}>usun</button>
+                <button onClick={() => this.props.addGroup()}>dodaj</button>
+                <button onClick={this.props.removeLastGroup}>usun</button>
                 <button onClick={() => this.props.removeGroup(1)}>usun o id 1</button>
-                <button onClick={() => this.props.clearGroups()}>usun wszystkie</button>
+                <button onClick={this.props.clearGroups}>usun wszystkie</button>
+                <button onClick={() => {
+                    const {groups, items} = generateFakeData();
+                    this.props.setGroups(groups);
+                    this.props.setItems(items);
+                }}>wygeneruj</button>
             </React.Fragment>
         );
     }

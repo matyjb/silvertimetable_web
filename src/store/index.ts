@@ -1,14 +1,14 @@
 import { createStore } from "redux";
 import rootReducer from "../reducers/index";
 import { IGlobalState } from "./IGlobalState";
-import generateFakeData from "../components/generate-fake-data";
+// import generateFakeData from "../components/generate-fake-data";
 
 declare let window: any;
-const {groups, items} = generateFakeData();
+// const {groups, items} = generateFakeData();
 
 export const initialState: IGlobalState = {
-    groups,
-    items,
+    groups: [],
+    items: [],
     selected_items: [],
 };
 

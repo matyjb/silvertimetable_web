@@ -1,7 +1,7 @@
 import * as types from "../constants/action-types";
 import { TimelineGroup, TimelineItem } from "react-calendar-timeline";
 
-export const addGroup = (name: string) => ({type: types.ADD_GROUP, payload: {name}});
+export const addGroup = (name = "grupa x") => ({type: types.ADD_GROUP, payload: {name}});
 export const removeLastGroup = () => ({type: types.REMOVE_LAST_GROUP});
 export const setGroups = (newGroups: TimelineGroup[]) => ({type: types.SET_GROUPS, payload: {newGroups}});
 export const setItems = (newItems: TimelineItem[]) => ({type: types.SET_ITEMS, payload: {newItems}});

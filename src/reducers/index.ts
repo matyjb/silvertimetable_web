@@ -104,7 +104,8 @@ const addItem = (state: IGlobalState, action: any): IGlobalState => {
     const { item } = action.payload;
     const newItems: TimelineItem[] = [];
     Object.assign(newItems, state.items); // to make sure that componentWillRecieveProps triggers
-    newItems.push({...item, id: state.items.length });
+    const newId = (state.items[state.items.length - 1]) ? state.items[state.items.length - 1].id + 1 : 0;
+    newItems.push({...item, id: newId });
     return { ...state, items: newItems };
 };
 
@@ -117,6 +118,9 @@ const removeLastItem = (state: IGlobalState, action: any): IGlobalState => {
 
 const removeGroup = (state: IGlobalState, action: any): IGlobalState => {
     const { groupId } = action.payload;
+    state.items.filter(item => item.group === groupId).forEach(item => {
+        state = removeItem(state, {payload: {itemId: item.id}});
+    });
     const newGroups: TimelineGroup[] = state.groups.filter(group => group.id !== groupId);
     return { ...state, groups: newGroups };
 };
@@ -130,15 +134,16 @@ const addGroup = (state: IGlobalState, action: any): IGlobalState => {
     const { name } = action.payload;
     const newGroups: TimelineGroup[] = [];
     Object.assign(newGroups, state.groups); // to make sure that componentWillRecieveProps triggers
-    newGroups.push({ id: state.groups.length, title: name });
+    const newId = (state.groups[state.groups.length - 1]) ? state.groups[state.groups.length - 1].id + 1 : 0;
+    newGroups.push({ id: newId, title: name });
     return { ...state, groups: newGroups };
 };
 
 const removeLastGroup = (state: IGlobalState, action: any): IGlobalState => {
-    const newGroups: TimelineGroup[] = [];
-    Object.assign(newGroups, state.groups); // to make sure that componentWillRecieveProps triggers
-    newGroups.pop();
-    return { ...state, groups: newGroups };
+    if (state.groups.length > 0) {
+        state = removeGroup(state, {payload: {groupId: state.groups[state.groups.length - 1].id}});
+    }
+    return { ...state };
 };
 
 const moveItem = (state: IGlobalState, action: any): IGlobalState => {
